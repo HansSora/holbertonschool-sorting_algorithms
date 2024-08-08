@@ -1,32 +1,32 @@
-#include "binary_trees.h"
-
+#include "sort.h"
 /**
- * binary_tree_insert_left - Inserts a node as the left-child of another node.
- * @parent: Pointer to the node to insert the left-child in.
- * @value: Value to store in the new node.
- *
- * Return: Pointer to the created node,or NULL on failure or if parent is NULL.
+ * insertion_sort_list - sorts a doubly linked list of integers in ascending
+ * order using insertion sort
+ * @list: list
  */
-binary_tree_t *binary_tree_insert_left(binary_tree_t *parent, int value)
+void insertion_sort_list(listint_t **list)
 {
-	binary_tree_t *new_node;
+	listint_t *current = NULL;
 
-	if (parent == NULL)
-		return (NULL);
-
-	new_node = malloc(sizeof(binary_tree_t));
-	if (new_node == NULL)
-		return (NULL);
-
-	new_node->n = value;
-	new_node->parent = parent;
-	new_node->left = parent->left;
-	new_node->right = NULL;
-
-	if (parent->left != NULL)
-		parent->left->parent = new_node;
-
-	parent->left = new_node;
-
-	return (new_node);
+	if (list == NULL)
+		return;
+	current = (*list)->next;
+	while (current != NULL)
+	{
+		while (current->prev != NULL && current->prev->n > current->n)
+		{
+			current->prev->next = current->next;
+			if (current->next != NULL)
+				current->next->prev = current->prev;
+			current->next = current->prev;
+			current->prev = current->next->prev;
+			current->next->prev = current;
+			if (current->prev == NULL)
+				*list = current;
+			else
+				current->prev->next = current;
+			print_list(*list);
+		}
+		current = current->next;
+	}
 }
