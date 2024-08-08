@@ -1,73 +1,32 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "sort.h"
+#include "binary_trees.h"
 
 /**
-* swap_nodes - Swaps two nodes in a doubly linked list
-* @list: Pointer to the head of the list
-* @node1: Pointer to the first node
-* @node2: Pointer to the second node
-*/
-void swap_nodes(listint_t **list, listint_t *node1, listint_t *node2)
+ * binary_tree_insert_left - Inserts a node as the left-child of another node.
+ * @parent: Pointer to the node to insert the left-child in.
+ * @value: Value to store in the new node.
+ *
+ * Return: Pointer to the created node,or NULL on failure or if parent is NULL.
+ */
+binary_tree_t *binary_tree_insert_left(binary_tree_t *parent, int value)
 {
-	listint_t *prev1, *next1, *prev2, *next2;
+	binary_tree_t *new_node;
 
-	if (node1 == node2 || node1 == NULL || node2 == NULL)
-		return;
+	if (parent == NULL)
+		return (NULL);
 
-	prev1 = node1->prev;
-	next1 = node1->next;
-	prev2 = node2->prev;
-	next2 = node2->next;
+	new_node = malloc(sizeof(binary_tree_t));
+	if (new_node == NULL)
+		return (NULL);
 
-	if (prev1)
-		prev1->next = node2;
-	else
-		*list = node2;
+	new_node->n = value;
+	new_node->parent = parent;
+	new_node->left = parent->left;
+	new_node->right = NULL;
 
-	if (next2)
-		next2->prev = node1;
+	if (parent->left != NULL)
+		parent->left->parent = new_node;
 
-	node2->prev = prev1;
-	node2->next = next1;
+	parent->left = new_node;
 
-	if (next1)
-		next1->prev = node2;
-
-	node1->prev = node2;
-	node1->next = next2;
-
-	print_list(*list);
-}
-
-/**
-* insertion_sort_list - Sorts a doubly linked list of integers in ascending order
-* @list: Pointer to the head of the list
-*/
-void insertion_sort_list(listint_t **list)
-{
-	listint_t *current, *sorted, *temp;
-
-	if (list == NULL || *list == NULL)
-		return;
-
-	current = (*list)->next;
-
-	while (current != NULL)
-		{
-			temp = current;
-			current = current->next;
-
-			sorted = temp->prev;
-
-			while (sorted != NULL && temp->n < sorted->n)
-			{
-				sorted = sorted->prev;
-			}
-
-			if (sorted == temp->prev)
-				continue;
-
-			swap_nodes(list, temp, temp->prev);
-		}
+	return (new_node);
 }
